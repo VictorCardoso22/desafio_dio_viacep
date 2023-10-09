@@ -1,3 +1,4 @@
+import 'package:desafio_dio_viacep/model/viacep_model.dart';
 import 'package:desafio_dio_viacep/viacep/viacep_viewmodel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,46 @@ class _ViacepState extends State<Viacep> {
                 } else {}
               },
             ),
-            Text("cidade: ${model.cidade}")
+            Row(
+              children: [
+                Text("cidade: ${model.cidade}"),
+                TextButton.icon(
+                    onPressed: () {
+                      model.saveCEP(ViacepModel());
+                    },
+                    icon: const Icon(Icons.save),
+                    label: const Text("Salvar"))
+              ],
+            ),
+            Center(child: Text('Meus ceps salvos:')),
+            SizedBox(
+              width: 350,
+              height: 200,
+              child: ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: model.listCep.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Column(
+                              children: [
+                                Text('Cidade: ${model.listCep[index].cidade}'),
+                              ],
+                            ),
+                            Spacer(),
+                            TextButton(
+                              onPressed: () {},
+                              child: const Icon(Icons.delete),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+            )
           ]);
         });
   }
