@@ -3,18 +3,11 @@ import 'dart:convert';
 import 'package:desafio_dio_viacep/model/viacep_model.dart';
 import 'package:desafio_dio_viacep/repositories/cep_repository.dart';
 import 'package:stacked/stacked.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ViacepViewlModel extends BaseViewModel {
-  String cidade = '';
-  String estado = '';
-  String endereco = '';
-  String? cep;
-  String? bairro;
-  String? ibge;
-  String? gia;
   List<ViacepModel> listCep = [];
+  ViacepModel viacepModel = ViacepModel();
   ViacepViewlModel() {
     readCEP();
   }
@@ -26,18 +19,40 @@ class ViacepViewlModel extends BaseViewModel {
     var response = await http.get(url);
     var json = jsonDecode(response.body);
     var viacep = ViacepModel.fromJson(json);
-    print(viacep.localidade);
-    cidade = viacep.localidade!;
-    estado = viacep.uf!;
-    endereco = viacep.logradouro!;
-    bairro = viacep.bairro;
-    ibge = viacep.ibge;
-    gia = viacep.gia;
+    viacepModel = ViacepModel.create(
+      cep: viacep.cep,
+      bairro: viacep.bairro,
+      complemento: viacep.complemento,
+      ddd: viacep.ddd,
+      gia: viacep.gia,
+      ibge: viacep.ibge,
+      localidade: viacep.localidade,
+      logradouro: viacep.logradouro,
+      siafi: viacep.siafi,
+      uf: viacep.uf,
+    );
+
     notifyListeners();
   }
 
-  saveCEP(ViacepModel viacepModel) {
-    print(viacepModel);
+  saveCEP(ViacepModel viacepModel) async {
+    var cep = CepRepository();
+
+    await cep.post(ViacepModel.create(
+      cep: viacepModel.cep,
+      bairro: viacepModel.bairro,
+      complemento: viacepModel.complemento,
+      ddd: viacepModel.ddd,
+      gia: viacepModel.gia,
+      ibge: viacepModel.ibge,
+      localidade: viacepModel.localidade,
+      logradouro: viacepModel.logradouro,
+      siafi: viacepModel.siafi,
+      uf: viacepModel.uf,
+    ));
+    listCep.clear();
+    await readCEP();
+    notifyListeners();
   }
 
   readCEP() async {
@@ -47,7 +62,14 @@ class ViacepViewlModel extends BaseViewModel {
       listCep.add(element);
     });
     notifyListeners();
-    print(listCep);
-    // return listCep.results;
+  }
+
+  deleteCEP(String id) async {
+    var cep = CepRepository();
+    print(id);
+    await cep.delete(id);
+    listCep.clear();
+    await readCEP();
+    notifyListeners();
   }
 }

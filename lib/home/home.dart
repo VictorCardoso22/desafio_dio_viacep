@@ -15,12 +15,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Padding(
         padding: EdgeInsets.all(32),
         child: Column(
           children: [
-            Text("informe o cep para consulta:"),
+            Text(
+              "Informe o cep para consulta:",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 22,
+            ),
             Viacep(),
           ],
         ),

@@ -13,7 +13,7 @@ class CepBack4AppModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (results != null) {
       data['results'] = results!.map((v) => v.toJson()).toList();
     }
@@ -25,7 +25,7 @@ class ViacepModel {
   String? objectId;
   String? createdAt;
   String? updatedAt;
-  String? cidade;
+  String? cep;
   String? logradouro;
   String? complemento;
   String? bairro;
@@ -40,7 +40,19 @@ class ViacepModel {
       {this.objectId,
       this.createdAt,
       this.updatedAt,
-      this.cidade,
+      this.cep,
+      this.logradouro,
+      this.complemento,
+      this.bairro,
+      this.localidade,
+      this.uf,
+      this.ibge,
+      this.gia,
+      this.ddd,
+      this.siafi});
+
+  ViacepModel.create(
+      {this.cep,
       this.logradouro,
       this.complemento,
       this.bairro,
@@ -55,7 +67,7 @@ class ViacepModel {
     objectId = json['objectId'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    cidade = json['cidade'];
+    cep = json['cep'];
     logradouro = json['logradouro'];
     complemento = json['complemento'];
     bairro = json['bairro'];
@@ -72,7 +84,23 @@ class ViacepModel {
     data['objectId'] = objectId;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
-    data['cidade'] = cidade;
+    data['cep'] = cep;
+    data['logradouro'] = logradouro;
+    data['complemento'] = complemento;
+    data['bairro'] = bairro;
+    data['localidade'] = localidade;
+    data['uf'] = uf;
+    data['ibge'] = ibge;
+    data['gia'] = gia;
+    data['ddd'] = ddd;
+    data['siafi'] = siafi;
+    return data;
+  }
+
+  Map<String, dynamic> toCreateJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+
+    data['cep'] = cep;
     data['logradouro'] = logradouro;
     data['complemento'] = complemento;
     data['bairro'] = bairro;

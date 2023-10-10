@@ -1,6 +1,4 @@
-import 'package:desafio_dio_viacep/model/viacep_model.dart';
 import 'package:desafio_dio_viacep/viacep/viacep_viewmodel.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -25,6 +23,10 @@ class _ViacepState extends State<Viacep> {
               maxLength: 8,
               keyboardType: TextInputType.number,
               controller: cepController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Digite o CEP',
+              ),
               onChanged: (String value) async {
                 cep = value.replaceAll(RegExp(r'[^0-9]'), '');
                 if (cep.length == 8) {
@@ -32,22 +34,51 @@ class _ViacepState extends State<Viacep> {
                 } else {}
               },
             ),
-            Row(
-              children: [
-                Text("cidade: ${model.cidade}"),
-                TextButton.icon(
-                    onPressed: () {
-                      model.saveCEP(ViacepModel());
-                    },
-                    icon: const Icon(Icons.save),
-                    label: const Text("Salvar"))
-              ],
+            model.viacepModel.localidade != null
+                ? Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.black38),
+                    ),
+                    child: Row(
+                      children: [
+                        Column(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Nome: ${model.viacepModel.localidade}"),
+                                Text("CEP: ${model.viacepModel.cep}"),
+                              ],
+                            )
+                          ],
+                        ),
+                        const Spacer(),
+                        TextButton.icon(
+                            onPressed: () async {
+                              await model.saveCEP(model.viacepModel);
+                            },
+                            icon: const Icon(Icons.save),
+                            label: const Text("Salvar"))
+                      ],
+                    ),
+                  )
+                : Container(),
+            const SizedBox(
+              height: 12,
             ),
-            Center(child: Text('Meus ceps salvos:')),
+            const Center(
+                child: Text(
+              'Meus ceps salvos:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            )),
+            const SizedBox(height: 8),
             SizedBox(
-              width: 350,
-              height: 200,
+              width: 450,
+              height: 400,
               child: ListView.builder(
+                  shrinkWrap: true,
                   padding: const EdgeInsets.all(8),
                   itemCount: model.listCep.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -56,14 +87,28 @@ class _ViacepState extends State<Viacep> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Column(
-                              children: [
-                                Text('Cidade: ${model.listCep[index].cidade}'),
-                              ],
+                            SizedBox(
+                              width: 300,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      'Nome: ${model.listCep[index].localidade}'),
+                                  Text(
+                                    'Logradouro: ${model.listCep[index].logradouro}',
+                                    softWrap: true,
+                                    maxLines: 2,
+                                  ),
+                                  Text('ddd: ${model.listCep[index].ddd}'),
+                                ],
+                              ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                await model
+                                    .deleteCEP(model.listCep[index].objectId!);
+                              },
                               child: const Icon(Icons.delete),
                             )
                           ],
